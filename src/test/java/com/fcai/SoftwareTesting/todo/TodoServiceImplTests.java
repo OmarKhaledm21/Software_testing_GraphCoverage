@@ -67,7 +67,7 @@ public class TodoServiceImplTests {
     @Test
     public void testReadTodoWithNullTodo() {
         /**
-         * PRECONDITION: NO TODO ITEM WITH ID 831741*/
+         * PRECONDITION: NO TODO ITEM WITH ID 831741 or todos.size==0*/
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             todoService.read("831741");
         });
@@ -110,6 +110,7 @@ public class TodoServiceImplTests {
     /**
      * END Unit Tests Read Method
      * */
+
     /**
      * Unit tests for Delete, Update & List methods
      */
@@ -142,6 +143,47 @@ public class TodoServiceImplTests {
     }
 
     @Test
+    public void testDeleteNullId() {
+        todoService = new TodoServiceImpl();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            todoService.delete(null);
+        });
+    }
+
+    @Test
+    public void testDeleteEmptyId() {
+        todoService = new TodoServiceImpl();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            todoService.delete("");
+        });
+    }
+
+    @Test
+    public void testDeleteWithNotFoundTodo() {
+        todoService = new TodoServiceImpl();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            todoService.delete("123");
+        });
+    }
+
+    @Test
+    public void testDeleteWithNotFoundTodoWithNonEmptyTodos() {
+
+        todoService = new TodoServiceImpl();
+        todoService.create(new TodoCreateRequest("Title 1", "Description 1"));
+        todoService.create(new TodoCreateRequest("Title 2", "Description 2"));
+        todoService.create(new TodoCreateRequest("Title 3", "Description 3"));
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            todoService.delete("123");
+        });
+    }
+
+
+    /**
+     * Unit Tests for Update method
+     */
+    @Test
     public void testUpdateTodo() {
         todoService = new TodoServiceImpl();
         todoService.create(new TodoCreateRequest("Title 1", "Description 1"));
@@ -167,6 +209,43 @@ public class TodoServiceImplTests {
     }
 
     @Test
+    public void testUpdateNullId() {
+        todoService = new TodoServiceImpl();
+        boolean completed = true;
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            todoService.update(null, completed);
+        });
+    }
+
+    @Test
+    public void testUpdateEmptyId() {
+        todoService = new TodoServiceImpl();
+        boolean completed = true;
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            todoService.update("", completed);
+        });
+    }
+
+    @Test
+    public void testUpdateNonEmptyTodos() {
+        todoService = new TodoServiceImpl();
+        todoService.create(new TodoCreateRequest("Title 1", "Description 1"));
+        todoService.create(new TodoCreateRequest("Title 2", "Description 2"));
+        todoService.create(new TodoCreateRequest("Title 3", "Description 3"));
+
+        boolean completed = true;
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            todoService.update("123", completed);
+        });
+    }
+
+
+    /**
+     * Unit Tests for List method
+     */
+    @Test
     public void testList() {
         todoService = new TodoServiceImpl();
         Assertions.assertNotNull(todoService.list());
@@ -184,7 +263,8 @@ public class TodoServiceImplTests {
 
     /**
      * END Unit Tests Update, Delete, List Methods
-     * */
+     */
+
     /**
      * Unit tests for ListCompleted
      */
@@ -200,6 +280,15 @@ public class TodoServiceImplTests {
         Assertions.assertNotNull(result);
         Assertions.assertEquals(1, result.size());
         Assertions.assertEquals("Title 2", result.get(0).getTitle());
+    }
+
+    @Test
+    public void testListCompletedTodosWithEmptyTodos() {
+        todoService = new TodoServiceImpl();
+        List<Todo> result = todoService.listCompleted();
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(0, result.size());
     }
 
 }
