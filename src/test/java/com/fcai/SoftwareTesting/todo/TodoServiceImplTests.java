@@ -110,7 +110,6 @@ public class TodoServiceImplTests {
     /**
      * END Unit Tests Read Method
      * */
-
     /**
      * Unit tests for Delete, Update & List methods
      */
@@ -261,6 +260,14 @@ public class TodoServiceImplTests {
         Assertions.assertEquals(3, todoService.list().size());
     }
 
+    @Test
+    public void testListWithNullTodos() {
+        todoService = new TodoServiceImpl();
+        todoService.setTodos(null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            todoService.list();
+        });
+    }
     /**
      * END Unit Tests Update, Delete, List Methods
      */
@@ -289,6 +296,15 @@ public class TodoServiceImplTests {
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(0, result.size());
+    }
+
+    @Test
+    public void testListCompletedTodosWithNullTodos() {
+        todoService = new TodoServiceImpl();
+        todoService.setTodos(null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            todoService.listCompleted();
+        });
     }
 
 }

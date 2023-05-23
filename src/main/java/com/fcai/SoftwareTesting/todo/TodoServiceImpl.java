@@ -9,6 +9,10 @@ import java.util.List;
 public class TodoServiceImpl implements TodoService {
     private static List<Todo> todos;
 
+    public void setTodos(List<Todo> todos) { // we made this to test null todos
+        TodoServiceImpl.todos = todos;
+    }
+
     public TodoServiceImpl() {
         todos = new ArrayList<Todo>();
     }

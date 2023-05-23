@@ -4,6 +4,9 @@ import java.util.List;
 
 public interface TodoService {
 
+    public void setTodos(List<Todo> todos); // we made this to test null todos
+
+
     Todo create(TodoCreateRequest todo);
 
     Todo read(String id);
